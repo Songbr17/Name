@@ -9,6 +9,12 @@ const COMP = new URLSearchParams(location.search).get('comp') || 'principal';
 
 const SHUTTER = 0.5; // obturador de 180°
 
+function halton(i, b) {
+  let f = 1, r = 0;
+  while (i > 0) { f /= b; r += f * (i % b); i = Math.floor(i / b); }
+  return r;
+}
+
 async function loadFonts() {
   const specs = [
     '400 30px "JBMono"', '500 30px "JBMono"', '700 30px "JBMono"', '800 30px "JBMono"',
@@ -50,6 +56,8 @@ async function boot() {
   const mod = COMP === 'camada' ? await import('./comps/camada/timeline.js') : await import('./timeline.js');
   const tl = await mod.createTimeline({ renderer });
   const ctx = comp.uiCanvas.getContext('2d');
+  // diagnóstico: quantos sub-quadros de motion blur cada quadro usa
+  window.samplesFor = (fi) => tl.samples(fi / FPS);
 
   window.renderFrame = async (fi, opts = {}) => {
     const t = fi / FPS;
@@ -61,6 +69,10 @@ async function boot() {
     const prof = {};
     const mark = (k, t0) => { if (opts.profile) { gl.finish(); prof[k] = (prof[k] || 0) + (performance.now() - t0); } return performance.now(); };
     let tm = performance.now();
+    // antisserrilhado por acumulação: com muitos sub-quadros, cada um desloca a
+    // câmera por uma fração de pixel (Halton 2,3) e o MSAA é desligado
+    const jitterAA = tl.jitterAA && N >= 6;
+    comp.setMSAA(jitterAA ? 0 : 4);
     comp.beginFrame();
     for (let s = 0; s < N; s++) {
       const ts = N === 1 ? t : t + ((s + 0.5) / N - 0.5) * SHUTTER / FPS;
@@ -70,7 +82,9 @@ async function boot() {
       ctx.clearRect(0, 0, W, H);
       tl.drawUI(ctx, ts, fi, st);
       tm = mark('ui', tm);
+      if (jitterAA && st.camera) st.camera.setViewOffset(W, H, halton(s + 1, 2) - 0.5, halton(s + 1, 3) - 0.5, W, H);
       comp.render3D(st.scene, st.camera, st.extra);
+      if (jitterAA && st.camera) st.camera.clearViewOffset();
       tm = mark('3d', tm);
       const blur = st.blur || 0;
       if (blur > 0.3) comp.blur3D(blur);

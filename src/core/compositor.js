@@ -216,6 +216,16 @@ export class Compositor {
     this.finalScene = quad(this.finalMat);
   }
 
+  // MSAA da camada 3D. Com muitos sub-quadros a própria acumulação (com jitter
+  // sub-pixel da câmera) já faz o antisserrilhado, então o MSAA pode ser
+  // desligado nesses quadros (o render por software fica bem mais rápido).
+  setMSAA(n) {
+    if (this.rt3d.samples === n) return;
+    this.rt3d.dispose();
+    this.rt3d = new THREE.WebGLRenderTarget(this.W, this.H, { type: THREE.HalfFloatType, samples: n, colorSpace: THREE.NoColorSpace });
+    this.compMat.uniforms.t3d.value = this.rt3d.texture;
+  }
+
   setPlate(img) {
     this.plateTex.image = img;
     this.plateTex.needsUpdate = true;

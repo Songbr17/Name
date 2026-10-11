@@ -301,11 +301,25 @@ export function createWindows() {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 
-  // amostras de motion blur: entradas das janelas e movimentos de câmera
+  // Amostras de motion blur proporcionais ao deslocamento real na tela durante
+  // o obturador (como o "adaptive sample limit" do After Effects): o rastro fica
+  // contínuo, sem "cópias" escalonadas do texto.
+  function shutterDisp(t) {
+    const h = 0.25 / 24;
+    const a = camera(t - h), b = camera(t + h), c = camera(t);
+    let m = 0;
+    for (const [sx, sy] of [[0, 0], [W, 0], [0, H], [W, H], [W / 2, H / 2]]) {
+      const px = (sx - W / 2) / c.z + c.cx, py = (sy - H / 2) / c.z + c.cy;
+      const ax = (px - a.cx) * a.z, ay = (py - a.cy) * a.z;
+      const bx = (px - b.cx) * b.z, by = (py - b.cy) * b.z;
+      m = Math.max(m, Math.hypot(bx - ax, by - ay));
+    }
+    return m;
+  }
   function samples(t) {
-    for (const art of ARTICLES) if (t >= art.tIn - 0.02 && t < art.tIn + 0.3) return 6;
-    for (let i = 1; i < CAM.length; i++) if (t > CAM[i - 1][0] && t < CAM[i][0] && CAM[i][0] - CAM[i - 1][0] < 1) return 4;
-    return 2;
+    let n = Math.ceil(shutterDisp(t) / 1.6);
+    for (const art of ARTICLES) if (t >= art.tIn - 0.02 && t < art.tIn + 0.32) n = Math.max(n, 14);
+    return clamp(n, 2, 24);
   }
 
   return { ui, samples };

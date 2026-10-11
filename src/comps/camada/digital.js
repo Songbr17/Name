@@ -253,9 +253,9 @@ export function createDigital() {
   // documento "ORDEM" assinado dentro do painel
   function orderDoc(ctx, t, fi, k) {
     const tk = DIG_T.sign0 + k * DIG_T.cycle;
-    if (t < tk - 0.02 || t > tk + 0.62) return;
-    const inP = tw(t, tk, tk + 0.16, E.out);
-    const outP = tw(t, tk + 0.34, tk + 0.56, E.inQuad);
+    if (t < tk - 0.06 || t > tk + 0.7) return;
+    const inP = tw(t, tk - 0.04, tk + 0.2, E.inOut);
+    const outP = tw(t, tk + 0.32, tk + 0.68, E.inOut);
     const x = lerp(CM.x + 40, DOC.cx - DOC.w / 2, inP) + outP * (SPB.x - DOC.cx + 40);
     const y = DOC.cy - DOC.h / 2;
     const s = lerp(0.55, 1, inP) * lerp(1, 0.5, outP);
@@ -509,10 +509,15 @@ export function createDigital() {
     thinkText(ctx, t, fi);
   }
 
+  // sub-quadros de motion blur: o bastante para o rastro ficar contínuo (sem
+  // "cópias" escalonadas) nos movimentos rápidos
   function samples(t) {
-    if (t >= DIG_T.zoom && t < DIG_T.zoom + 0.85) return 6;     // câmera entrando
-    if (t >= DIG_T.rows && t < DIG_T.rows + 1.0) return 6;      // recuo
-    if (t >= DIG_T.sign0 && t < DIG_T.zoom) return 4;           // ordens indo e vindo
+    if (t >= DIG_T.sign0 - 0.34 && t < DIG_T.zoom + 0.1) return 24;  // ordens indo e vindo
+    if (t >= DIG_T.zoom && t < DIG_T.zoom + 0.85) return 14;         // câmera entrando
+    if (t >= DIG_T.rows && t < DIG_T.rows + 1.0) return 14;          // recuo
+    if (t >= DIG_T.cert && t < DIG_T.cert + 0.35) return 10;         // cartões entrando
+    if (t >= DIG_T.key && t < DIG_T.key + 0.35) return 10;
+    if (t >= DIG_T.slot && t < DIG_T.cert) return 3;
     return 2;
   }
 

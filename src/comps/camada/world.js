@@ -732,15 +732,47 @@ export function createWorld(renderer) {
     legend(ctx, t, fi);
   }
 
+  // Motion blur adaptativo: mede quanto pontos de referência (mesa, carimbo,
+  // caixa da sala, plataforma, topo dos blocos) andam na tela durante o
+  // obturador e usa sub-quadros suficientes para o rastro ficar contínuo.
+  const probeCam = new THREE.PerspectiveCamera(34, W / H, 0.02, 80);
+  const STATIC = [
+    [-0.75, TOP, -0.43], [0.75, TOP, -0.43], [0.75, TOP, 0.43], [-0.75, TOP, 0.43], [0, LAMP_Y, -0.02],
+    [ROOM.x0, 0, ROOM.z0], [ROOM.x1, 0, ROOM.z0], [ROOM.x1, 0, ROOM.z1], [ROOM.x0, 0, ROOM.z1],
+    [ROOM.x0, ROOM.h, ROOM.z0], [ROOM.x1, ROOM.h, ROOM.z0], [ROOM.x1, ROOM.h, ROOM.z1], [ROOM.x0, ROOM.h, ROOM.z1],
+    [BX - 3.5, BMP.h, BZ - 3.5], [BX + 3.5, BMP.h, BZ - 3.5], [BX + 3.5, BMP.h, BZ + 3.5], [BX - 3.5, BMP.h, BZ + 3.5],
+    ...stamps.filter((_, i) => i % 5 === 0).map((st) => [st.x, TOP + STAMP_H, st.z]),
+  ];
+  const probeBlocks = blocks.filter((_, i) => i % 23 === 0);
+  function probes(t) {
+    const sp = stampPos(t);
+    const pts = STATIC.map((p) => p);
+    pts.push([sp[0], sp[1] + STAMP_H, sp[2]], [sp[0], sp[1], sp[2]]);
+    for (const bk of probeBlocks) pts.push([bk.x, BMP.h + bk.h * Math.max(0, spring(t, bk.t0, 2.0, 0.6)), bk.z]);
+    return pts;
+  }
+  const pv = new THREE.Vector3();
+  function projectAll(t) {
+    const c = cameraAt(t);
+    probeCam.fov = c.f; probeCam.updateProjectionMatrix();
+    probeCam.position.set(c.p[0], c.p[1], c.p[2]); probeCam.up.set(0, 1, 0);
+    probeCam.lookAt(c.q[0], c.q[1], c.q[2]); probeCam.updateMatrixWorld(true);
+    return probes(t).map(([x, y, z]) => { pv.set(x, y, z).project(probeCam); return { x: (pv.x * 0.5 + 0.5) * W, y: (-pv.y * 0.5 + 0.5) * H, ok: pv.z < 1 }; });
+  }
   function samples(t) {
-    if (t < WT.start + 0.5) return 4;
-    if (t > WT.lift && t < WT.up + 0.4) return 8;     // carimbo em movimento
-    if (t > WT.crane && t < 32.9) return 10;         // grua
-    if (t > 23.7 && t < 25.1) return 5;              // entrada na sala
-    // blocos subindo (rastro contínuo sem "cópias")
-    for (const g of [[WT.fint, 1.4], [WT.fund, 1.6], [WT.other, 1.6]]) if (t > g[0] && t < g[0] + g[1]) return 5;
-    if (t > WT.fint && t < 41.9) return 3;
-    return 2;
+    const h = 0.25 / 24;
+    const A = projectAll(t - h), B = projectAll(t + h);
+    let m = 0;
+    A.forEach((a, i) => {
+      const b = B[i];
+      if (!a.ok || !b.ok) return;
+      const inside = (q) => q.x > -150 && q.x < W + 150 && q.y > -150 && q.y < H + 150;
+      if (!inside(a) && !inside(b)) return;
+      m = Math.max(m, Math.hypot(b.x - a.x, b.y - a.y));
+    });
+    let n = Math.ceil(m / 2.0);
+    if (t < WT.start + 0.45) n = Math.max(n, 4);   // entrada desfocada
+    return clamp(n, 2, 20);
   }
 
   return { scene, camera, update, ui, samples };

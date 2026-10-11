@@ -57,5 +57,5 @@ export async function createTimeline({ renderer }) {
     return fp;
   }
 
-  return { samples, update, drawUI, frameParams, plateFor };
+  return { samples, update, drawUI, frameParams, plateFor, jitterAA: true };
 }

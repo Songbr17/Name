@@ -74,6 +74,21 @@ o fundo é só grão e cintilação, então a inversão não aparece).
 | 32,8 | "uma provedora de Banking as a Service," | **BANKING AS A SERVICE**; a grade da infraestrutura varre o topo da plataforma. |
 | 36,6 | "…92 fintechs, 210 fundos de investimento e centenas de outras empresas." | Sobem em onda **92** blocos teal (fintechs), **210** dourados (fundos) e centenas de cinzas (outras empresas). A câmera abre no fim. |
 
+### Movimento
+
+- Janelas: pop curto de escala (mola bem amortecida) e opacidade de 3 quadros. A câmera é um
+  "null" 2D com *easy ease* entre os enquadramentos, e as janelas antigas escurecem quando
+  chega uma nova. A marcação vermelha cresce da esquerda para a direita, linha por linha, em
+  velocidade constante, como uma máscara animada.
+- Ordens do diagrama: o mesmo ciclo (chega, é assinada, sai para o SPB), defasado no tempo.
+- 3D: câmera contínua por spline (sem "para e anda"), com paradas suaves só onde a fala pede.
+  O carimbo inclina pela aceleração, como se fosse segurado na mão, a borracha comprime no
+  impacto e a câmera treme de leve. Os blocos sobem em onda com uma mola de leve overshoot.
+- **Motion blur adaptativo**: em cada quadro, mede-se quanto os elementos andam na tela durante
+  o obturador (180°), e o número de sub-quadros (2 a 24) acompanha essa distância. O rastro
+  fica contínuo, sem as "cópias" escalonadas. Com muitos sub-quadros, cada um desloca a câmera
+  por uma fração de pixel (Halton) e a acumulação faz o antisserrilhado no lugar do MSAA.
+
 ### Fontes das matérias (0–9,8 s)
 
 Só entra texto confirmado palavra por palavra. As janelas mostram um recorte de cada
