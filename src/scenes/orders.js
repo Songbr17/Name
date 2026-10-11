@@ -23,32 +23,32 @@ export const OR_T = {
 };
 
 const N = 20;
-const SRC = { x: 300, y: 474, pitch: 28, cell: 20 };
-const BOX = { x: 1520, y: 380, w: 720, h: 690 };
-const DST = { x: 1642, y: 548, pitch: 24, cell: 19 };
+// Mesma grade na origem e no destino: a transferência é uma translação
+// horizontal pura. Cada coluna funciona como um layer/precomp do After Effects
+// com o MESMO keyframe de posição (easy ease forte), defasado 2 quadros da
+// vizinha — nada de trajetórias ou atrasos aleatórios.
+const SRC = { x: 300, y: 548, pitch: 28, cell: 20 };
+const BOX = { x: 1520, y: 380, w: 720, h: 760 };
+const DST = { x: 1604, y: 548, pitch: 28, cell: 20 };
+const COL_DELAY = 2 / 24;   // stagger de 2 quadros por coluna
+const MOVE = 12 / 24;       // cada coluna leva 12 quadros
 
-// ordem de lançamento: colunas mais próximas do SPB saem primeiro
 const cells = [];
 for (let r = 0; r < N; r++) {
   for (let c = 0; c < N; c++) {
     const i = r * N + c;
-    const j = hash(i, 77);
     cells.push({
       r, c, i,
-      appear: OR_T.grid + (r + c) * 0.0125 + j * 0.03,
-      redAt: OR_T.red + Math.hypot(r - 9.5, c - 9.5) * 0.028 + hash(i, 5) * 0.08,
-      launch: OR_T.fly + (N - 1 - c) * 0.066 + r * 0.0028 + hash(i, 9) * 0.02,
-      dur: 0.48 + hash(i, 11) * 0.12,
+      // cascata diagonal e onda radial regulares (stagger por índice / distância)
+      appear: OR_T.grid + (r + c) * 0.0125,
+      redAt: OR_T.red + Math.hypot(r - 9.5, c - 9.5) * 0.034,
+      // a coluna mais próxima do SPB sai primeiro
+      launch: OR_T.fly + (N - 1 - c) * COL_DELAY,
+      dur: MOVE,
       sx: SRC.x + c * SRC.pitch, sy: SRC.y + r * SRC.pitch,
       dx: DST.x + c * DST.pitch, dy: DST.y + r * DST.pitch,
-      arc: (hash(i, 13) - 0.5) * 70 + (r - 9.5) * 5,
     });
   }
-}
-
-function bez(p0, p1, p2, p3, t) {
-  const u = 1 - t;
-  return u * u * u * p0 + 3 * u * u * t * p1 + 3 * u * t * t * p2 + t * t * t * p3;
 }
 
 export function createOrders() {
@@ -59,7 +59,7 @@ export function createOrders() {
     // ------------------------------------------------ bloco esquerdo
     const lab = decode('ORDENS DE PAGAMENTO', t, OR_T.grid - 0.25, { cps: 30, seed: 501, fi });
     setFont(ctx, FONTS.mono, 20, 500);
-    drawSegs(ctx, [{ text: lab.text, color: '#6F7275' }], SRC.x, 300, { ls: 6 });
+    drawSegs(ctx, [{ text: lab.text, color: '#6F7275' }], SRC.x, SRC.y - 174, { ls: 6 });
     // contador 000 -> 400 (acompanha a cascata)
     const shown = cells.reduce((n, c) => n + (fq(t) >= c.appear ? 1 : 0), 0);
     if (t >= OR_T.grid - 0.2) {
@@ -68,11 +68,11 @@ export function createOrders() {
       setFont(ctx, FONTS.big, 150);
       ctx.letterSpacing = '2px';
       ctx.fillStyle = PAL.white;
-      ctx.fillText(String(shown).padStart(3, '0'), SRC.x - 4, 438);
+      ctx.fillText(String(shown).padStart(3, '0'), SRC.x - 4, SRC.y - 36);
       ctx.restore();
     }
     // "FRAUDULENTAS"
-    labelBox(ctx, t, fi, { x: SRC.x + 282, y: 336, w: 270, h: 74, text: 'FRAUDULENTAS', t0: OR_T.red + 0.06, size: 24, ls: 4, seed: 502 });
+    labelBox(ctx, t, fi, { x: SRC.x + 282, y: SRC.y - 138, w: 270, h: 74, text: 'FRAUDULENTAS', t0: OR_T.red + 0.06, size: 24, ls: 4, seed: 502 });
 
     // grade de origem
     for (const c of cells) {
@@ -143,10 +143,9 @@ export function createOrders() {
     const scanning = t >= OR_T.scan;
     for (const c of cells) {
       if (t < c.launch) continue;
-      const p = tw(t, c.launch, c.launch + c.dur, E.inOut);
-      const x = bez(c.sx, c.sx + 260, c.dx - 260, c.dx, p);
-      const y = bez(c.sy, c.sy + c.arc, c.dy + c.arc * 0.4, c.dy, p);
-      const sc = lerp(SRC.cell, DST.cell, p);
+      const p = tw(t, c.launch, c.launch + c.dur, E.inOutStrong);
+      const x = lerp(c.sx, c.dx, p), y = c.sy;
+      const sc = SRC.cell;
       const ok = scanning && c.dy + DST.cell / 2 < scanY && p >= 1;
       ctx.save();
       if (ok) {

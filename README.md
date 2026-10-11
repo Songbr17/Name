@@ -27,10 +27,10 @@ Para encaixar na timeline: o trecho novo começa em **00:00:39:22** (quadro 958)
 | 44.98 | "terceirizado, salário médio" | `VÍNCULO: TERCEIRIZADO`, `SALÁRIO: MÉDIO` + medidor 5/10. |
 | 46.86 | "O nome dele é João Nazareno Roque" | Rótulo `NOME` fica vermelho; a tarja preta sai e o nome decodifica (na ficha e impresso no crachá), sublinhado dourado. |
 | 49.02 | "ofereceram 5 mil reais" | Tilt rápido da câmera "perseguindo" o **maço de R$ 5 mil**, que cai com gravidade real, bate de quina e assenta (micro-tremida no impacto); `OFERECIDOS R$ 5.000` conta de 0 a 5.000. |
-| 52.10 | "5 mil reais por 813 milhões" | Câmera recua e desce: a **pilha de R$ 813 milhões** (≈ 2,1 m de maços) se revela quando as luzes acendem piscando; `DESVIADOS R$ 813.000.000` rola os dígitos em escala log. |
+| 52.10 | "5 mil reais por 813 milhões" | Câmera recua e desce: a **pilha de R$ 813 milhões** (≈ 2,1 m de maços) se revela quando as luzes acendem piscando; `DESVIADOS R$ 813.000.000` rola os dígitos em escala log, ligado à pilha por uma linha guia que sai da aresta do bloco e se funde ao sublinhado vermelho do rótulo. |
 | 54.30 | — | Saída em glitch (mesma assinatura das transições da referência). |
 | 54.62 | "Como é que 400 ordens fraudulentas…" | Grade de 400 ordens em cascata (contador 000→400), onda vermelha + `FRAUDULENTAS`. |
-| 56.74 | "…entram no sistema de pagamentos brasileiro…" | As 400 ordens voam para dentro do `SPB` (caixa com alças, título `SISTEMA DE PAGAMENTOS BRASILEIRO`). |
+| 56.74 | "…entram no sistema de pagamentos brasileiro…" | As 400 ordens entram no `SPB` coluna por coluna: cada coluna desliza em linha reta com o mesmo *easy ease*, defasada 2 quadros da vizinha (como layers com keyframes escalonados no After Effects). |
 | 59.00 | "…e são aceitas como verdadeiras?" | Varredura teal valida tudo: vermelho vira branco com ✓, `✓ ACEITAS COMO VERDADEIRAS`, `400 / 400`. |
 | 60.62 | "A resposta não está no PIX." | Diagrama recua e perde o foco; a frase entra com as letras assentando uma a uma (efeito do "FOI CONTABILIDADE"), `NÃO` em vermelho, sublinhado dourado. |
 

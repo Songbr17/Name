@@ -483,7 +483,7 @@ export function createEvidenceSet(renderer) {
 
   function money(n) { return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 
-  function bigValue(ctx, label, value, x, y, size, t, t0, fi, { alpha = 1, color = PAL.white, labelColor = '#B9BBBC' } = {}) {
+  function bigValue(ctx, label, value, x, y, size, t, t0, fi, { alpha = 1, color = PAL.white, labelColor = '#B9BBBC', ulColor = null } = {}) {
     // estilo do "VALOR CONFIRMADO / R$ 813,000,000" da abertura
     ctx.save(); ctx.globalAlpha *= alpha;
     const ld = decode(label, t, t0, { cps: 30, seed: 400 + size, fi });
@@ -491,7 +491,7 @@ export function createEvidenceSet(renderer) {
     const lw = measure(ctx, ld.text, 3);
     drawSegs(ctx, [{ text: ld.text, color: labelColor }], x, y - size * 1.0, { ls: 3, shadow: { color: 'rgba(0,0,0,0.5)', blur: 5, x: 2, y: 3 } });
     if (ld.visible) {
-      ctx.fillStyle = labelColor;
+      ctx.fillStyle = ulColor || labelColor;
       ctx.fillRect(x - 2, y - size * 1.0 + 12, Math.max(0, lw + 4) * tw(t, t0 + 0.1, t0 + 0.5, E.outQuart), 2);
     }
     ctx.restore();
@@ -539,30 +539,31 @@ export function createEvidenceSet(renderer) {
     const t0 = EV_T.lights + 0.02;
     if (t < t0) return;
     const A = env(t, t0, t0 + 0.05, EV_T.uiEnd, EV_T.uiEnd + 0.01, E.linear, E.linear);
-    const anchor = project(new THREE.Vector3(BLOCK.x - BLOCK.s / 2 + 0.06, 1.62, BLOCK.z + BLOCK.s / 2), camera);
+    const lx = 200, ly = 700, size = 168;
+    // geometria do rótulo (igual à de bigValue): o sublinhado do "DESVIADOS"
+    const ulY = ly + 150 - size + 12;
+    setFont(ctx, FONTS.type, Math.round(size * 0.27));
+    const ulEnd = lx + measure(ctx, 'DESVIADOS', 3) + 2;
+    // ponto de ancoragem na aresta vertical frontal-esquerda da pilha, na mesma
+    // altura de tela do sublinhado (rastreado no 3D, como um track point do AE):
+    // a linha guia sai da pilha e encontra o sublinhado — nunca fica solta
+    const top = project(new THREE.Vector3(BLOCK.x - BLOCK.s / 2, BLOCK.s, BLOCK.z + BLOCK.s / 2), camera);
+    const bot = project(new THREE.Vector3(BLOCK.x - BLOCK.s / 2, 0, BLOCK.z + BLOCK.s / 2), camera);
+    const k = clamp((ulY - top.y) / Math.max(1, bot.y - top.y), 0.08, 0.92);
+    const ax = lerp(top.x, bot.x, k), ay = lerp(top.y, bot.y, k);
     withAlpha(ctx, A, () => {
-      const lx = 200, ly = 700;
-      const lp = tw(t, t0, t0 + 0.3, E.outQuart);
-      const elbow = [anchor.x - 90, ly - 60];
+      // a linha se desenha da pilha em direção ao rótulo
+      const lp = tw(t, t0, t0 + 0.32, E.outQuart);
       ctx.save();
-      const pts = [[anchor.x, anchor.y], elbow, [lx + 930, ly - 60]];
-      // linha guia: do canto da pilha até o valor
-      const seg1 = Math.hypot(elbow[0] - anchor.x, elbow[1] - anchor.y);
-      const seg2 = Math.hypot(pts[2][0] - elbow[0], 0);
-      const tot = seg1 + seg2;
-      const d1 = Math.min(1, (lp * tot) / seg1);
-      drawLine(ctx, anchor.x, anchor.y, lerp(anchor.x, elbow[0], d1), lerp(anchor.y, elbow[1], d1), 1, { color: PAL.redBox, width: 2 });
-      if (lp * tot > seg1) {
-        const d2 = (lp * tot - seg1) / seg2;
-        drawLine(ctx, elbow[0], elbow[1], lerp(elbow[0], pts[2][0], d2), elbow[1], 1, { color: PAL.redBox, width: 2 });
-      }
-      node(ctx, anchor.x, anchor.y, 10, PAL.redBox, 1);
+      drawLine(ctx, ax, ay, lerp(ax, ulEnd, lp), lerp(ay, ulY + 1, lp), 1, { color: PAL.redBox, width: 2 });
+      node(ctx, ax, ay, 10, PAL.redBox, 1);
+      node(ctx, lerp(ax, ulEnd, 0.5), lerp(ay, ulY + 1, 0.5), 8, PAL.redBox, lp > 0.5 ? 1 : 0);
       ctx.restore();
       // contagem 5.000 -> 813.000.000 em escala logarítmica (os dígitos "rolam")
       const c = tw(fq(t), EV_T.bigCount, Wd.milhoes + 0.1, E.inOut);
       const v = Math.exp(lerp(Math.log(5000), Math.log(813000000), c));
       const val = c >= 1 ? '813.000.000' : money(Math.round(v / (c > 0.85 ? 1000 : 1)) * (c > 0.85 ? 1000 : 1));
-      bigValue(ctx, 'DESVIADOS', val, lx, ly + 150, 168, t, t0 + 0.05, fi);
+      bigValue(ctx, 'DESVIADOS', val, lx, ly + 150, size, t, t0 + 0.05, fi, { ulColor: PAL.redBox });
     });
   }
 
