@@ -58,8 +58,8 @@ const CAM = [
   [12.62, [1282, 728, 1.030], E.inOutSoft],
   [13.42, [1280, 742, 1.720], E.inOutStrong],
   [17.50, [1280, 752, 1.780], E.inOutSoft],
-  [18.46, [1300, 1000, 1.120], E.inOutStrong],
-  [20.44, [1304, 1004, 1.085], E.inOutSoft],
+  [18.46, [1300, 900, 1.120], E.inOutStrong],
+  [20.44, [1304, 904, 1.085], E.inOutSoft],
 ];
 
 function camAt(t) {
