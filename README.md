@@ -1,4 +1,14 @@
-# Animação 0:39 → fim (estilo documental dark + objetos 3D)
+# Animações no estilo documental dark (+ objetos 3D)
+
+Este repositório renderiza duas composições no mesmo motor:
+
+- **Comp Principal, 0:39 → fim** (seção abaixo).
+- **Comp - Camada Invisível** (41,9 s), com matérias reais nas janelas, trecho 2D e cenas 3D
+  (veja [Camada Invisível](#comp---camada-invisível-419-s)).
+
+---
+
+## Comp Principal: 0:39 → fim
 
 Continuação da `Comp_Principal_editado_completo_previa_1440p.mp4` a partir do
 quadro **958 (00:00:39:22)** — o primeiro quadro vazio depois do glitch de saída
@@ -33,6 +43,60 @@ Para encaixar na timeline: o trecho novo começa em **00:00:39:22** (quadro 958)
 | 56.74 | "…entram no sistema de pagamentos brasileiro…" | As 400 ordens entram no `SPB` coluna por coluna: cada coluna desliza em linha reta com o mesmo *easy ease*, defasada 2 quadros da vizinha (como layers com keyframes escalonados no After Effects). |
 | 59.00 | "…e são aceitas como verdadeiras?" | Varredura teal valida tudo: vermelho vira branco com ✓, `✓ ACEITAS COMO VERDADEIRAS`, `400 / 400`. |
 | 60.62 | "A resposta não está no PIX." | Diagrama recua e perde o foco; a frase entra com as letras assentando uma a uma (efeito do "FOI CONTABILIDADE"), `NÃO` em vermelho, sublinhado dourado. |
+
+## Comp - Camada Invisível (41,9 s)
+
+Vídeo feito para o áudio `Comp - Camada Invisível.mp3`, sobre o **mesmo fundo** da comp
+principal (a placa vazia 958–1526 da referência, tocada em vai e volta para cobrir os 41,9 s;
+o fundo é só grão e cintilação, então a inversão não aparece).
+
+| Arquivo | O que é |
+|---|---|
+| `render/camada_invisivel_1440p.mp4` | 2560×1440, 24 fps, 0 → 41,875 s, com a narração |
+
+### Roteiro visual
+
+| Tempo | Narração | Visual |
+|---|---|---|
+| 0,0 | "Uma dessas tradutoras se chama C&M Software." | Janela (vidro cinza, como as referências) com a matéria da **Exame**: a marcação vermelha passa por "Empresa responsável por ligar instituições financeiras ao BC" em "tradutoras" e por "C&M Software" no título. |
+| 3,0 | "A C&M desenvolveu uma plataforma chamada Corner," | Nova janela com o título da página da C&M **"O Corner PIX\PSTI é uma plataforma do PSTI da C&M Software"**; a marcação acompanha "C&M", "plataforma" e "Corner". |
+| 5,8 | "que conectava dezenas de instituições financeiras…" | **Jornal Opção** (02/07/2025, 15h48): "…empresa que conecta bancos ao PIX e ao Banco Central". |
+| 7,1 | "…ao sistema de pagamentos." | **Agência Brasil**, seção "Entenda o ataque": "Embora não opere transações financeiras, a C&M conecta várias instituições financeiras ao Sistema de Pagamentos Brasileiro (SPB), operado pelo Banco Central." A marcação segue a fala em duas partes. |
+| 9,8 | "E para conseguir assinar ordens em nome dessas instituições," | Glitch → diagrama 2D: instituições → **C&M SOFTWARE / CORNER** → **SPB**. Cada ordem chega por um conector, é assinada dentro da C&M "EM NOME DE: INSTITUIÇÃO 0X" e segue para o SPB (o mesmo ciclo defasado no tempo). |
+| 12,8 | "ela precisava guardar uma coisa." | A câmera entra no painel da C&M, que vira um cofre (cadeado, borda vermelha) com uma vaga "?". |
+| 14,9 | "Os certificados digitais e as chaves privadas de cada cliente." | A vaga se divide: **CERTIFICADO DIGITAL** (papel, selo) e **CHAVE PRIVADA** (PEM decodificando). Em "cada cliente", a dupla se repete para cada instituição. |
+| 18,8 | "Pensa no que isso significa fisicamente." | Itálico de máquina de escrever, com **FISICAMENTE.** em vermelho. Depois, glitch → 3D. |
+| 20,4 | "É como se uma única empresa guardasse na mesma sala…" | **3D**: uma mesa no escuro e a luminária que acende piscando. A sala é marcada por uma caixa de transformação em 3D (arestas crescendo dos cantos), com o rótulo **MESMA SALA**. |
+| 24,1 | "…o carimbo oficial de dezenas de bancos diferentes." | A câmera entra: são 24 carimbos de madeira, cada um com o seu banco. Aparecem o callout **CARIMBO OFICIAL**, colchetes em onda em cada carimbo e "DEZENAS DE BANCOS DIFERENTES". |
+| 27,0 | "Não uma cópia," | Surge uma "cópia" (holograma), com a etiqueta **CÓPIA** riscada; ela se desfaz em glitch. |
+| 28,0 | "o carimbo que vale." | O carimbo verdadeiro é levantado, viaja até a ordem de pagamento e **bate no "vale"** (borracha comprime, câmera treme). Ao subir, revela a impressão **VÁLIDO**. |
+| 29,2 | "E a maior cliente da C&M era a BMP Money Plus," | Cabeçalho muda (□■□ "O MAIOR CLIENTE"). A grua sai da sala, que vira a caixa **C&M SOFTWARE**, e segue o cabo vermelho até a plataforma **BMP MONEY PLUS**. |
+| 32,8 | "uma provedora de Banking as a Service," | **BANKING AS A SERVICE**; a grade da infraestrutura varre o topo da plataforma. |
+| 36,6 | "…92 fintechs, 210 fundos de investimento e centenas de outras empresas." | Sobem em onda **92** blocos teal (fintechs), **210** dourados (fundos) e centenas de cinzas (outras empresas). A câmera abre no fim. |
+
+### Fontes das matérias (0–9,8 s)
+
+Só entra texto confirmado palavra por palavra. As janelas mostram um recorte de cada
+matéria (título, linha fina, trecho e data quando verificada); nada de corpo de texto inventado.
+
+- Exame (Future of Money): <https://exame.com/future-of-money/ataque-cm-software-atinge-contas-reserva-banco-central/>
+- Página do Corner PIX\PSTI (C&M Software): <https://www.cornerspi.com.br/sobre-corner-pix/>
+- Jornal Opção, 02/07/2025 15h48: <https://www.jornalopcao.com.br/ultimas-noticias/bc-confirma-ataque-hacker-a-empresa-que-conecta-bancos-ao-pix-e-ao-banco-central-721870/>
+- Agência Brasil (Economia): <https://agenciabrasil.ebc.com.br/economia/noticia/2025-07/bc-suspende-tres-instituicoes-do-pix-apos-ataque-cibernetico>
+
+As marcas dos veículos aparecem como texto simples (sem logotipos). Os carimbos e os
+blocos são ilustrativos; os rótulos "BANCO 01…24" e "INSTITUIÇÃO 01…" são
+genéricos e não representam instituições reais.
+
+### Como renderizar
+
+```bash
+node scripts/render.mjs --comp camada --ref /caminho/Comp_Principal_editado_completo_previa_1440p.mp4 \
+  --audio "/caminho/Comp - Camada Invisível.mp3" --workers 2 --encode
+```
+
+O render leva cerca de 1h30 em 4 núcleos de CPU (WebGL por software). Ele é retomável,
+e `--list 120,480,900` renderiza só alguns quadros.
 
 ## Estilo herdado da referência
 
@@ -80,8 +144,11 @@ de CPU (WebGL por software).
 
 ```
 src/
-  main.js                 render de 1 quadro (sub-quadros -> acumulação -> pós)
-  timeline.js             qual cena está ativa, motion blur por trecho, glitches
+  main.js                 render de 1 quadro (sub-quadros -> acumulação -> pós); ?comp=camada
+  timeline.js             (comp principal) cena ativa, motion blur por trecho, glitches
+  comps/camada/           "Camada Invisível": words.js (tempos), plate.js (fundo em vai e
+                          volta), articles.js (matérias verificadas + fontes), windows.js,
+                          digital.js (2D), world.js + world-textures.js (3D), timeline.js
   core/
     config.js             tempos das palavras, paleta, fontes
     ease.js / rand.js     easings, molas, ruído determinístico

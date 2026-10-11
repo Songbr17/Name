@@ -4,9 +4,12 @@
 //
 // Uso:
 //   node scripts/render.mjs --ref /caminho/Comp_Principal_editado_completo_previa_1440p.mp4 [opções]
+//   node scripts/render.mjs --comp camada --ref ... --audio /caminho/Comp_-_Camada_Invisivel.mp3 [opções]
 // Opções:
-//   --from N --to N     intervalo de quadros (padrão: 958..1526, i.e. 0:39.917 até o fim)
+//   --comp NOME         principal (0:39 -> fim, padrão) ou camada ("Camada Invisível", 0 -> 41,86 s)
+//   --from N --to N     intervalo de quadros (padrão: 958..1526 na principal, 0..1004 na camada)
 //   --step N            renderiza 1 a cada N quadros (prévia rápida)
+//   --list a,b,c        renderiza só esses quadros
 //   --workers N         instâncias paralelas do navegador (padrão 2)
 //   --samples N         força N sub-quadros de motion blur (padrão: definido na timeline)
 //   --encode            ao final, gera os MP4 (trecho + composição completa com áudio)
@@ -16,26 +19,35 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { serve } from './server.mjs';
+import { plateFor as plateCamada } from '../src/comps/camada/plate.js';
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const args = process.argv.slice(2);
 const opt = (name, def) => { const i = args.indexOf('--' + name); return i >= 0 ? args[i + 1] : def; };
 const flag = (name) => args.includes('--' + name);
 
-const START = 958, END = 1526;
+const COMP = opt('comp', 'principal');
+const COMPS = {
+  principal: { start: 958, end: 1526, frames: 'frames', plate: (n) => n },
+  camada: { start: 0, end: 1004, frames: 'frames_camada', plate: plateCamada },
+};
+if (!COMPS[COMP]) throw new Error(`composição desconhecida: ${COMP}`);
+const { start: START, end: END, plate: plateOf } = COMPS[COMP];
 const from = +opt('from', START), to = +opt('to', END), step = +opt('step', 1);
 const workers = +opt('workers', 2);
 const samples = opt('samples', null);
 const ref = opt('ref', process.env.REF_VIDEO || path.join(ROOT, 'ref', 'referencia.mp4'));
 const outDir = path.join(ROOT, 'out');
 const plateDir = path.join(outDir, 'plate');
-const frameDir = path.join(outDir, opt('frames-dir', 'frames'));
+const frameDir = path.join(outDir, opt('frames-dir', COMPS[COMP].frames));
+const audio = opt('audio', path.join(ROOT, 'ref', 'camada_invisivel.mp3'));
 fs.mkdirSync(plateDir, { recursive: true });
 fs.mkdirSync(frameDir, { recursive: true });
 
 const pad = (n) => String(n).padStart(4, '0');
 
-function ensurePlates(list) {
+function ensurePlates(frames) {
+  const list = [...new Set(frames.map(plateOf))];
   const missing = list.filter((n) => !fs.existsSync(path.join(plateDir, pad(n) + '.jpg')));
   if (!missing.length) return;
   if (!fs.existsSync(ref)) throw new Error(`vídeo de referência não encontrado: ${ref} (use --ref)`);
@@ -57,7 +69,7 @@ async function renderRange(list, port, id) {
   const page = await browser.newPage({ viewport: { width: 2560, height: 1440 }, deviceScaleFactor: 1 });
   page.on('console', (m) => { const s = m.text(); if (!/GPU stall|GroupMarkerNotSet|fallback to software/.test(s)) console.log(`[w${id}]`, s); });
   page.on('pageerror', (e) => console.log(`[w${id}] pageerror:`, e.message));
-  await page.goto(`http://127.0.0.1:${port}/src/index.html`);
+  await page.goto(`http://127.0.0.1:${port}/src/index.html?comp=${COMP}`);
   await page.waitForFunction(() => window.ready === true || window.bootError, null, { timeout: 120000 });
   const err = await page.evaluate(() => window.bootError);
   if (err) throw new Error(err);
@@ -82,7 +94,19 @@ async function renderRange(list, port, id) {
   await browser.close();
 }
 
+function encodeCamada() {
+  const out = path.join(ROOT, 'render', 'camada_invisivel_1440p.mp4');
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  if (!fs.existsSync(audio)) throw new Error(`áudio não encontrado: ${audio} (use --audio)`);
+  console.log('codificando Camada Invisível ->', out);
+  const r = spawnSync('ffmpeg', ['-v', 'error', '-y', '-framerate', '24', '-start_number', String(START), '-i', path.join(frameDir, '%04d.png'),
+    '-i', audio, '-map', '0:v', '-map', '1:a', '-c:v', 'libx264', '-preset', 'slow', '-crf', String(opt('crf', 17)), '-pix_fmt', 'yuv420p',
+    '-profile:v', 'high', '-level', '5.1', '-x264-params', 'keyint=48', '-c:a', 'aac', '-b:a', '256k', '-movflags', '+faststart', out], { stdio: 'inherit' });
+  if (r.status !== 0) throw new Error('falha ao codificar a Camada Invisível');
+}
+
 function encode() {
+  if (COMP === 'camada') return encodeCamada();
   const seg = path.join(ROOT, 'render', 'animacao_0-39_ate_fim_1440p.mp4');
   const full = path.join(ROOT, 'render', 'comp_completa_previa_1440p.mp4');
   fs.mkdirSync(path.dirname(seg), { recursive: true });
@@ -103,7 +127,8 @@ function encode() {
 async function main() {
   if (!flag('only-encode')) {
     const list = [];
-    for (let n = from; n <= to; n += step) list.push(n);
+    if (opt('list')) list.push(...opt('list').split(',').map(Number));
+    else for (let n = from; n <= to; n += step) list.push(n);
     ensurePlates(list);
     const server = await serve(ROOT);
     const port = server.address().port;

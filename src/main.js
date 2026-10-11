@@ -3,7 +3,9 @@
 import * as THREE from 'three';
 import { W, H, FPS } from './core/config.js';
 import { Compositor } from './core/compositor.js';
-import { createTimeline } from './timeline.js';
+
+// Qual composição renderizar: ?comp=principal (0:39 -> fim) ou ?comp=camada
+const COMP = new URLSearchParams(location.search).get('comp') || 'principal';
 
 const SHUTTER = 0.5; // obturador de 180°
 
@@ -12,6 +14,15 @@ async function loadFonts() {
     '400 30px "JBMono"', '500 30px "JBMono"', '700 30px "JBMono"', '800 30px "JBMono"',
     '30px "FreeMono"', '30px "FreeMonoOb"', '30px "FreeMonoBold"', '30px "Anton"',
   ];
+  if (COMP === 'camada') {
+    specs.push(
+      '400 30px "Inter"', '700 30px "Inter"', '800 30px "Inter"', '900 30px "Inter"',
+      '400 30px "Roboto"', '500 30px "Roboto"', '700 30px "Roboto"',
+      '700 30px "Merriweather"', '900 30px "Merriweather"',
+      '700 30px "Montserrat"', '800 30px "Montserrat"',
+      '400 30px "Open Sans"', '600 30px "Open Sans"',
+    );
+  }
   await Promise.all(specs.map((s) => document.fonts.load(s, 'AÃÇÕÉÍ0123456789R$')));
   await document.fonts.ready;
 }
@@ -36,12 +47,14 @@ async function boot() {
   document.body.appendChild(renderer.domElement);
 
   const comp = new Compositor(renderer, W, H);
-  const tl = await createTimeline({ renderer });
+  const mod = COMP === 'camada' ? await import('./comps/camada/timeline.js') : await import('./timeline.js');
+  const tl = await mod.createTimeline({ renderer });
   const ctx = comp.uiCanvas.getContext('2d');
 
   window.renderFrame = async (fi, opts = {}) => {
     const t = fi / FPS;
-    const plateSrc = opts.plate || `/out/plate/${String(fi).padStart(4, '0')}.jpg`;
+    const plateIdx = tl.plateFor ? tl.plateFor(fi) : fi;
+    const plateSrc = opts.plate || `/out/plate/${String(plateIdx).padStart(4, '0')}.jpg`;
     comp.setPlate(await loadImage(plateSrc));
     const N = opts.samples || tl.samples(t);
     const gl = renderer.getContext();
