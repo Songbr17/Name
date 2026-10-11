@@ -20,9 +20,11 @@ export async function createTimeline({ renderer }) {
     if (t < 40.3) return 2;
     if (t < 41.35) return 5;
     if (t < DOOR_T.push0) return 3;
-    if (t < DOOR_T.cut) return 10;
+    if (t < DOOR_T.cut - 0.17) return 10;
+    if (t < DOOR_T.cut) return 20; // final da travessia: câmera muito rápida
     if (t < EV_T.arrive) return 6;
     if (t < EV_T.tilt) return 2;
+    if (t >= EV_T.drop + 0.12 && t < EV_T.drop + 0.5) return 24; // queda rápida do maço: rastro suave
     if (t < EV_T.tilt + 1.0) return 8;
     if (t < EV_T.pull) return 2;
     if (t < EV_T.pull + 1.75) return 7;
@@ -30,7 +32,7 @@ export async function createTimeline({ renderer }) {
     if (t < OR_T.start) return 1;
     if (t < OR_T.grid + 0.7) return 3;
     if (t < OR_T.fly) return 2;
-    if (t < OR_T.fly + 2.1) return 6;
+    if (t < OR_T.fly + 2.1) return 24; // 400 ordens em alta velocidade: rastro contínuo
     if (t < OR_T.outro) return 3;
     if (t < 62.6) return 3;
     return 2;

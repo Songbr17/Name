@@ -3,7 +3,7 @@
 // (54.58s – fim). Grade de 400 ordens que surge em cascata, fica vermelha,
 // voa para dentro do SPB, é validada (vira "verdadeira") e, por fim, a frase
 // de fechamento com as letras assentando uma a uma (efeito do "FOI CONTABILIDADE").
-import { W, H, PAL, FONTS, WORDS as Wd } from '../core/config.js';
+import { W, H, PAL, FONTS, WORDS as Wd, fq } from '../core/config.js';
 import { E, tw, clamp, lerp, env } from '../core/ease.js';
 import { hash, fbm1 } from '../core/rand.js';
 import { transformBox, drawLine, node, labelBox, withAlpha, shadowOn, shadowOff, drawBottomBrackets, underline } from '../core/draw.js';
@@ -61,7 +61,7 @@ export function createOrders() {
     setFont(ctx, FONTS.mono, 20, 500);
     drawSegs(ctx, [{ text: lab.text, color: '#6F7275' }], SRC.x, 300, { ls: 6 });
     // contador 000 -> 400 (acompanha a cascata)
-    const shown = cells.reduce((n, c) => n + (t >= c.appear ? 1 : 0), 0);
+    const shown = cells.reduce((n, c) => n + (fq(t) >= c.appear ? 1 : 0), 0);
     if (t >= OR_T.grid - 0.2) {
       ctx.save();
       shadowOn(ctx, { color: 'rgba(0,0,0,0.75)', blur: 4, x: 5, y: 6 });
@@ -160,7 +160,8 @@ export function createOrders() {
       } else {
         ctx.fillStyle = '#AF3A3A';
         ctx.fillRect(x, y, sc, sc);
-        ctx.strokeStyle = '#D63E4B'; ctx.lineWidth = 1.5; ctx.strokeRect(x + 0.75, y + 0.75, sc - 1.5, sc - 1.5);
+        // contorno só quando parada (em voo vira rastro contínuo no motion blur)
+        if (p >= 1 || p <= 0) { ctx.strokeStyle = '#D63E4B'; ctx.lineWidth = 1.5; ctx.strokeRect(x + 0.75, y + 0.75, sc - 1.5, sc - 1.5); }
       }
       ctx.restore();
     }

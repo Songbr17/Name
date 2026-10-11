@@ -65,6 +65,9 @@ async function boot() {
       tm = mark('comp', tm);
     }
     comp.finish(tl.frameParams(t, fi));
+    // força a GPU (SwiftShader) a terminar aqui, e não durante o screenshot
+    const px = new Uint8Array(4);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
     mark('final', tm);
     if (opts.profile) return JSON.stringify(prof);
     return N;

@@ -5,7 +5,7 @@
 // caindo com gravidade real e a pilha gigante de R$ 813 milhões revelada
 // quando a câmera recua e as luzes acendem.
 import * as THREE from 'three';
-import { W, H, PAL, FONTS, WORDS as Wd } from '../core/config.js';
+import { W, H, PAL, FONTS, WORDS as Wd, fq } from '../core/config.js';
 import { E, tw, kf, spring, clamp, lerp, env, dampedSine } from '../core/ease.js';
 import { hash, fbm1, noise1 } from '../core/rand.js';
 import { studioEnv, project, aimCamera, canvasTexture, makeCanvas, additive, contactShadow } from '../core/three-utils.js';
@@ -21,9 +21,9 @@ export const EV_T = {
   nameHint: Wd.o_nome,          // 46.86
   nameReveal: Wd.joao - 0.06,   // 47.56
   uiOut: 48.90,
-  tilt: 48.92,
-  drop: 48.99,
-  cashUI: 49.50,
+  tilt: 49.00,
+  drop: 48.86,
+  cashUI: 49.60,
   cashCount: Wd.cinco - 0.02,
   pull: Wd.por - 0.04,          // 52.06
   lights: Wd.n813,              // 52.38
@@ -267,11 +267,12 @@ export function createEvidenceSet(renderer) {
     const b = tw(t, EV_T.arrive, EV_T.tilt, E.inOutSoft);
     pos = [lerp(pos[0], 0.016, b), lerp(pos[1], 0.636, b), lerp(pos[2], 0.352, b)];
     tgt = [lerp(tgt[0], 0.062, b), tgt[1], 0];
-    const c = tw(t, EV_T.tilt, EV_T.tilt + 0.95, E.inOutStrong);
-    pos = [lerp(pos[0], 0.085, c), lerp(pos[1], 0.30, c), lerp(pos[2], 0.53, c)];
-    tgt = [lerp(tgt[0], 0.10, c), lerp(tgt[1], 0.018, c), lerp(tgt[2], 0.07, c)];
-    const d = tw(t, EV_T.tilt + 0.95, EV_T.pull, E.inOutSoft);
+    const c = tw(t, EV_T.tilt, EV_T.tilt + 0.34, E.inOut);
+    pos = [lerp(pos[0], 0.085, c), lerp(pos[1], 0.24, c), lerp(pos[2], 0.56, c)];
+    tgt = [lerp(tgt[0], 0.10, c), lerp(tgt[1], 0.05, c), lerp(tgt[2], 0.07, c)];
+    const d = tw(t, EV_T.tilt + 0.34, EV_T.pull, E.inOutSoft);
     pos = [lerp(pos[0], 0.083, d), lerp(pos[1], 0.275, d), lerp(pos[2], 0.48, d)];
+    tgt = [tgt[0], lerp(tgt[1], 0.018, d), tgt[2]];
     const e = tw(t, EV_T.pull, EV_T.pull + 1.7, E.inOutStrong);
     pos = [lerp(pos[0], -1.02, e), lerp(pos[1], 0.36, e), lerp(pos[2], 3.0, e)];
     tgt = [lerp(tgt[0], 0.60, e), lerp(tgt[1], 1.07, e), lerp(tgt[2], -1.1, e)];
@@ -527,7 +528,7 @@ export function createEvidenceSet(renderer) {
       node(ctx, a.x, a.y, 9, PAL.redBox, 1);
       ctx.restore();
       if (lp >= 1) {
-        const cnt = tw(t, EV_T.cashCount, EV_T.cashCount + 0.7, E.outQuart);
+        const cnt = tw(fq(t), EV_T.cashCount, EV_T.cashCount + 0.7, E.outQuart);
         const val = cnt > 0 ? money(5000 * cnt) : '0';
         bigValue(ctx, 'OFERECIDOS', val, lx, ly, Math.round(150 * k), t, t0 + 0.1, fi);
       }
@@ -558,7 +559,7 @@ export function createEvidenceSet(renderer) {
       node(ctx, anchor.x, anchor.y, 10, PAL.redBox, 1);
       ctx.restore();
       // contagem 5.000 -> 813.000.000 em escala logarítmica (os dígitos "rolam")
-      const c = tw(t, EV_T.bigCount, Wd.milhoes + 0.1, E.inOut);
+      const c = tw(fq(t), EV_T.bigCount, Wd.milhoes + 0.1, E.inOut);
       const v = Math.exp(lerp(Math.log(5000), Math.log(813000000), c));
       const val = c >= 1 ? '813.000.000' : money(Math.round(v / (c > 0.85 ? 1000 : 1)) * (c > 0.85 ? 1000 : 1));
       bigValue(ctx, 'DESVIADOS', val, lx, ly + 150, 168, t, t0 + 0.05, fi);

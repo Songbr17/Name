@@ -2,10 +2,10 @@
 // corretos avançam ~1 por quadro e, à frente deles, uma cauda de 3–6
 // caracteres aleatórios que trocam a cada quadro.
 import { hash, randGlyph } from './rand.js';
-import { FPS } from './config.js';
+import { FPS, fq } from './config.js';
 
 export function decode(target, t, t0, { cps = 24, tail = 5, seed = 1, fi = 0, minTail = 2 } = {}) {
-  const el = t - t0;
+  const el = fq(t) - t0;
   if (el < 0) return { text: '', k: 0, done: false, visible: false };
   const len = target.length;
   const k = Math.min(len, Math.floor(el * cps));
@@ -24,7 +24,7 @@ export function decode(target, t, t0, { cps = 24, tail = 5, seed = 1, fi = 0, mi
 
 // Saída por scramble: os caracteres viram lixo e somem do fim para o começo.
 export function undecode(target, t, t0, { cps = 40, seed = 1, fi = 0 } = {}) {
-  const el = t - t0;
+  const el = fq(t) - t0;
   if (el < 0) return target;
   const len = target.length;
   const gone = Math.floor(el * cps);

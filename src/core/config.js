@@ -62,4 +62,7 @@ export const FONTS = {
 };
 
 export const sec2frame = (s) => Math.round(s * FPS);
+// Tempo "do quadro": conteúdo discreto (texto decodificando, contadores) muda
+// uma vez por quadro, como no After Effects — só o movimento recebe motion blur.
+export const fq = (t) => Math.round(t * FPS) / FPS;
 export const frame2sec = (f) => f / FPS;

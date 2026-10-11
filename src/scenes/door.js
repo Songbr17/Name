@@ -21,7 +21,7 @@ const LIGHT_POS = new THREE.Vector3(0.05, 1.65, -2.7);
 export const DOOR_T = {
   in0: 39.93, in1: 40.40,
   led: 40.20, latch: 40.24, swing: 40.40,
-  hackLabel: 40.62, strike: 41.33, hackOut: 41.40,
+  hackLabel: 40.72, strike: 41.33, hackOut: 41.40,
   push0: 41.56, cut: 42.125,
 };
 
@@ -434,8 +434,8 @@ export function createDoorSet(renderer) {
     // status do leitor: "ACESSO LIBERADO"
     const rd = project(new THREE.Vector3(OW / 2 + JW / 2 + 0.03, 1.18, 0.07), camera);
     const lt0 = DOOR_T.latch - 0.02;
-    const lineP = tw(t, lt0, lt0 + 0.22, E.outQuart);
-    const stA = env(t, lt0, lt0 + 0.05, 40.78, 40.92, E.linear, E.linear);
+    const lineP = tw(t, lt0, lt0 + 0.13, E.outQuart);
+    const stA = env(t, lt0, lt0 + 0.05, 40.64, 40.74, E.linear, E.linear);
     if (stA > 0) {
       withAlpha(ctx, stA, () => {
         const x1 = rd.x + 150, y1 = rd.y - 190;
@@ -443,7 +443,7 @@ export function createDoorSet(renderer) {
         node(ctx, rd.x + 8, rd.y - 8, 8, PAL.tealBright, 1);
         if (lineP >= 1) {
           drawLine(ctx, x1, y1, x1 + 40, y1, 1, { color: PAL.tealBright, width: 2 });
-          const d = decode('LIBERADO', t, lt0 + 0.17, { cps: 30, seed: 41, fi });
+          const d = decode('LIBERADO', t, lt0 + 0.08, { cps: 40, seed: 41, fi });
           setFont(ctx, FONTS.mono, 22, 700);
           ctx.textBaseline = 'middle';
           drawSegs(ctx, [{ text: d.text, color: PAL.tealBright }], x1 + 54, y1 + 1, { ls: 5, glow: { color: PAL.tealBright, blur: 12, alpha: 0.4 }, shadow: { color: 'rgba(0,0,0,0.6)', blur: 6, x: 2, y: 3 } });

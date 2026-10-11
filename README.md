@@ -26,7 +26,7 @@ Para encaixar na timeline: o trecho novo começa em **00:00:39:22** (quadro 958)
 | 42.12 | "foi um desenvolvedor back-end de 48 anos" | **Crachá 3D** pendurado no cordão (torção e balanço amortecidos) com caixa de transformação; ficha `IDENTIFICAÇÃO` preenche `CARGO`, `IDADE`… no tempo da fala. |
 | 44.98 | "terceirizado, salário médio" | `VÍNCULO: TERCEIRIZADO`, `SALÁRIO: MÉDIO` + medidor 5/10. |
 | 46.86 | "O nome dele é João Nazareno Roque" | Rótulo `NOME` fica vermelho; a tarja preta sai e o nome decodifica (na ficha e impresso no crachá), sublinhado dourado. |
-| 49.02 | "ofereceram 5 mil reais" | Câmera desce; **maço de R$ 5 mil** cai com gravidade real, bate de quina e assenta; `OFERECIDOS R$ 5.000` conta de 0 a 5.000. |
+| 49.02 | "ofereceram 5 mil reais" | Tilt rápido da câmera "perseguindo" o **maço de R$ 5 mil**, que cai com gravidade real, bate de quina e assenta (micro-tremida no impacto); `OFERECIDOS R$ 5.000` conta de 0 a 5.000. |
 | 52.10 | "5 mil reais por 813 milhões" | Câmera recua e desce: a **pilha de R$ 813 milhões** (≈ 2,1 m de maços) se revela quando as luzes acendem piscando; `DESVIADOS R$ 813.000.000` rola os dígitos em escala log. |
 | 54.30 | — | Saída em glitch (mesma assinatura das transições da referência). |
 | 54.62 | "Como é que 400 ordens fraudulentas…" | Grade de 400 ordens em cascata (contador 000→400), onda vermelha + `FRAUDULENTAS`. |
@@ -50,8 +50,11 @@ Para encaixar na timeline: o trecho novo começa em **00:00:39:22** (quadro 958)
 - Curvas tipo *Easy Ease* com alta influência, e **física de verdade** onde há
   objeto: mola amortecida na porta, pêndulo/torção no crachá (cordão de 1,7 m →
   período ≈ 2,6 s), queda com g = 9,81 m/s² e micro-tremida de câmera no impacto.
-- **Motion blur real** (média de sub-quadros, obturador 180°), mais forte nos
-  movimentos rápidos.
+- **Motion blur real** (média de sub-quadros, obturador 180°): 2 sub-quadros nos
+  trechos calmos e até 20–24 na travessia da porta, na queda do maço e no voo
+  das 400 ordens (rastro contínuo, sem "cópias").
+- Texto decodificando e contadores mudam **uma vez por quadro** (como no After
+  Effects); só o que se move recebe blur.
 - Ações sobrepostas e escalonadas (nada começa/termina junto), "câmera na mão"
   com ruído fBm de baixíssima amplitude, cintilação de lâmpada ao acender.
 - Texto entra no tempo exato de cada palavra (timestamps do Whisper).
@@ -69,7 +72,9 @@ node scripts/render.mjs --ref /caminho/Comp_Principal_editado_completo_previa_14
 ```
 
 Opções: `--from/--to` (quadros), `--step`, `--samples N` (força N sub-quadros),
-`--workers N`, `--only-encode`.
+`--workers N`, `--frames-dir`, `--force` (refaz quadros já prontos — sem ele o
+render é retomável), `--only-encode`. O render completo leva ~25 min em 4 núcleos
+de CPU (WebGL por software).
 
 ## Estrutura
 

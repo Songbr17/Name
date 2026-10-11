@@ -62,11 +62,22 @@ async function renderRange(list, port, id) {
   const err = await page.evaluate(() => window.bootError);
   if (err) throw new Error(err);
   for (const n of list) {
-    const t0 = Date.now();
-    const N = await page.evaluate(([fi, s, pr]) => window.renderFrame(fi, { ...(s ? { samples: +s } : {}), profile: pr }), [n, samples, flag('profile')]);
-    const buf = await page.screenshot({ type: 'png', clip: { x: 0, y: 0, width: 2560, height: 1440 } });
-    fs.writeFileSync(path.join(frameDir, pad(n) + '.png'), buf);
-    console.log(`[w${id}] quadro ${n} (${(n / 24).toFixed(3)}s) N=${N} ${Date.now() - t0}ms`);
+    const out = path.join(frameDir, pad(n) + '.png');
+    if (!flag('force') && fs.existsSync(out) && fs.statSync(out).size > 0) continue;
+    for (let attempt = 1; ; attempt++) {
+      try {
+        const t0 = Date.now();
+        const N = await page.evaluate(([fi, s, pr]) => window.renderFrame(fi, { ...(s ? { samples: +s } : {}), profile: pr }), [n, samples, flag('profile')]);
+        const buf = await page.screenshot({ type: 'png', clip: { x: 0, y: 0, width: 2560, height: 1440 }, timeout: 300000 });
+        fs.writeFileSync(out + '.tmp', buf);
+        fs.renameSync(out + '.tmp', out);
+        console.log(`[w${id}] quadro ${n} (${(n / 24).toFixed(3)}s) N=${N} ${Date.now() - t0}ms`);
+        break;
+      } catch (e) {
+        console.log(`[w${id}] erro no quadro ${n} (tentativa ${attempt}): ${e.message.split('\n')[0]}`);
+        if (attempt >= 3) throw e;
+      }
+    }
   }
   await browser.close();
 }
