@@ -1,0 +1,25 @@
+{
+  "name": "animacao-0-39-fim",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Motion graphics 0:39 -> fim (estilo documental dark + objetos 3D) renderizado frame a frame",
+  "type": "module",
+  "scripts": {
+    "render": "node scripts/render.mjs",
+    "preview": "node scripts/render.mjs --preview"
+  },
+  "dependencies": {
+    "@fontsource/anton": "^5.3.0",
+    "@fontsource/bebas-neue": "^5.3.0",
+    "@fontsource/courier-prime": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/oswald": "^5.3.0",
+    "@fontsource/roboto-mono": "^5.3.0",
+    "@fontsource/space-mono": "^5.3.0",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  }
+}
