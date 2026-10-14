@@ -14,9 +14,9 @@ import { ARTICLES, F } from './articles.js';
 
 export const WIN_T = { glitch: 9.60, end: 9.80 };
 
-const TB = 56;          // altura da barra de título
-const FR = 12;          // espessura da moldura
-const R = 11;           // raio dos cantos externos
+export const TB = 56;   // altura da barra de título
+export const FR = 12;   // espessura da moldura
+export const R = 11;    // raio dos cantos externos
 const MARK = '#FF0100';
 const MARK_TEXT = '#650000';
 
@@ -100,7 +100,7 @@ function layout(ctx, art) {
 }
 
 // ------------------------------------------------------------ moldura "Aero"
-function roundRectPath(ctx, x, y, w, h, r) {
+export function roundRectPath(ctx, x, y, w, h, r) {
   ctx.beginPath();
   ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
   ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
@@ -109,7 +109,7 @@ function roundRectPath(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-function drawChrome(ctx, art, seed) {
+export function drawChrome(ctx, art, seed) {
   const w = art.w, h = art.h;
   // sombra projetada (separa as janelas empilhadas)
   ctx.save();

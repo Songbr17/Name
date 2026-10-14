@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { W, H, FPS } from './core/config.js';
 import { Compositor } from './core/compositor.js';
 
-// Qual composição renderizar: ?comp=principal (0:39 -> fim) ou ?comp=camada
+// Qual composição renderizar: ?comp=principal (0:39 -> fim), ?comp=camada ou ?comp=cta
 const COMP = new URLSearchParams(location.search).get('comp') || 'principal';
 
 const SHUTTER = 0.5; // obturador de 180°
@@ -20,7 +20,7 @@ async function loadFonts() {
     '400 30px "JBMono"', '500 30px "JBMono"', '700 30px "JBMono"', '800 30px "JBMono"',
     '30px "FreeMono"', '30px "FreeMonoOb"', '30px "FreeMonoBold"', '30px "Anton"',
   ];
-  if (COMP === 'camada') {
+  if (COMP === 'camada' || COMP === 'cta') {
     specs.push(
       '400 30px "Inter"', '700 30px "Inter"', '800 30px "Inter"', '900 30px "Inter"',
       '400 30px "Roboto"', '500 30px "Roboto"', '700 30px "Roboto"',
@@ -28,6 +28,9 @@ async function loadFonts() {
       '700 30px "Montserrat"', '800 30px "Montserrat"',
       '400 30px "Open Sans"', '600 30px "Open Sans"',
     );
+  }
+  if (COMP === 'cta') {
+    specs.push('400 30px "PT Sans"', '700 30px "PT Sans"', '900 30px "Nunito"', '700 30px "Kalam"');
   }
   await Promise.all(specs.map((s) => document.fonts.load(s, 'AÃÇÕÉÍ0123456789R$')));
   await document.fonts.ready;
@@ -53,11 +56,13 @@ async function boot() {
   document.body.appendChild(renderer.domElement);
 
   const comp = new Compositor(renderer, W, H);
-  const mod = COMP === 'camada' ? await import('./comps/camada/timeline.js') : await import('./timeline.js');
+  const MODS = { camada: './comps/camada/timeline.js', cta: './comps/cta/timeline.js' };
+  const mod = await import(MODS[COMP] || './timeline.js');
   const tl = await mod.createTimeline({ renderer });
   const ctx = comp.uiCanvas.getContext('2d');
   // diagnóstico: quantos sub-quadros de motion blur cada quadro usa
   window.samplesFor = (fi) => tl.samples(fi / FPS);
+  window.timeline = tl;
 
   window.renderFrame = async (fi, opts = {}) => {
     const t = fi / FPS;

@@ -6,8 +6,9 @@
 //   node scripts/render.mjs --ref /caminho/Comp_Principal_editado_completo_previa_1440p.mp4 [opções]
 //   node scripts/render.mjs --comp camada --ref ... --audio /caminho/Comp_-_Camada_Invisivel.mp3 [opções]
 // Opções:
-//   --comp NOME         principal (0:39 -> fim, padrão) ou camada ("Camada Invisível", 0 -> 41,86 s)
-//   --from N --to N     intervalo de quadros (padrão: 958..1526 na principal, 0..1004 na camada)
+//   --comp NOME         principal (0:39 -> fim, padrão), camada ("Camada Invisível", 0 -> 41,86 s)
+//                       ou cta (chamada para o Apoia.se, 0 -> 33,57 s)
+//   --from N --to N     intervalo de quadros (padrão: 958..1526 na principal, 0..1004 na camada, 0..805 no cta)
 //   --step N            renderiza 1 a cada N quadros (prévia rápida)
 //   --list a,b,c        renderiza só esses quadros
 //   --workers N         instâncias paralelas do navegador (padrão 2)
@@ -29,7 +30,8 @@ const flag = (name) => args.includes('--' + name);
 const COMP = opt('comp', 'principal');
 const COMPS = {
   principal: { start: 958, end: 1526, frames: 'frames', plate: (n) => n },
-  camada: { start: 0, end: 1004, frames: 'frames_camada', plate: plateCamada },
+  camada: { start: 0, end: 1004, frames: 'frames_camada', plate: plateCamada, audio: 'camada_invisivel.mp3', out: 'camada_invisivel_1440p.mp4' },
+  cta: { start: 0, end: 805, frames: 'frames_cta', plate: plateCamada, audio: 'cta.mp3', out: 'cta_apoiase_1440p.mp4' },
 };
 if (!COMPS[COMP]) throw new Error(`composição desconhecida: ${COMP}`);
 const { start: START, end: END, plate: plateOf } = COMPS[COMP];
@@ -40,7 +42,7 @@ const ref = opt('ref', process.env.REF_VIDEO || path.join(ROOT, 'ref', 'referenc
 const outDir = path.join(ROOT, 'out');
 const plateDir = path.join(outDir, 'plate');
 const frameDir = path.join(outDir, opt('frames-dir', COMPS[COMP].frames));
-const audio = opt('audio', path.join(ROOT, 'ref', 'camada_invisivel.mp3'));
+const audio = opt('audio', path.join(ROOT, 'ref', COMPS[COMP].audio || 'camada_invisivel.mp3'));
 fs.mkdirSync(plateDir, { recursive: true });
 fs.mkdirSync(frameDir, { recursive: true });
 
@@ -94,19 +96,20 @@ async function renderRange(list, port, id) {
   await browser.close();
 }
 
-function encodeCamada() {
-  const out = path.join(ROOT, 'render', 'camada_invisivel_1440p.mp4');
+// Composições com áudio próprio (camada, cta): vídeo dos quadros + narração.
+function encodeWithAudio() {
+  const out = path.join(ROOT, 'render', COMPS[COMP].out);
   fs.mkdirSync(path.dirname(out), { recursive: true });
   if (!fs.existsSync(audio)) throw new Error(`áudio não encontrado: ${audio} (use --audio)`);
-  console.log('codificando Camada Invisível ->', out);
+  console.log(`codificando ${COMP} ->`, out);
   const r = spawnSync('ffmpeg', ['-v', 'error', '-y', '-framerate', '24', '-start_number', String(START), '-i', path.join(frameDir, '%04d.png'),
     '-i', audio, '-map', '0:v', '-map', '1:a', '-c:v', 'libx264', '-preset', 'slow', '-crf', String(opt('crf', 17)), '-pix_fmt', 'yuv420p',
     '-profile:v', 'high', '-level', '5.1', '-x264-params', 'keyint=48', '-c:a', 'aac', '-b:a', '256k', '-movflags', '+faststart', out], { stdio: 'inherit' });
-  if (r.status !== 0) throw new Error('falha ao codificar a Camada Invisível');
+  if (r.status !== 0) throw new Error(`falha ao codificar ${COMP}`);
 }
 
 function encode() {
-  if (COMP === 'camada') return encodeCamada();
+  if (COMPS[COMP].out) return encodeWithAudio();
   const seg = path.join(ROOT, 'render', 'animacao_0-39_ate_fim_1440p.mp4');
   const full = path.join(ROOT, 'render', 'comp_completa_previa_1440p.mp4');
   fs.mkdirSync(path.dirname(seg), { recursive: true });
