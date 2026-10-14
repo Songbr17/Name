@@ -1,6 +1,6 @@
 // CTA "apoia.se/flux" (2D). Conceito: o vídeo PAUSA antes da madrugada do dia
 // 30 e o Flux se investiga como se fosse um caso: a câmera viaja por um quadro
-// de investigação, estação por estação, seguindo o fio vermelho, enquanto uma
+// de investigação, estação por estação, enquanto uma
 // contagem regressiva de 30 s corre no canto (00:30 -> 00:00 exatamente no
 // "agradeço").
 //
@@ -79,8 +79,6 @@ export function camAt(t) {
   return { cx: cx + fbm1(t * 0.2, 71) * 5 + sx, cy: cy + fbm1(t * 0.17, 73) * 4 + sy, z: z0 * (1 - dip) };
 }
 
-// fio vermelho que liga as estações (cresce durante as panorâmicas)
-const ANCHORS = [[1610, 1000], [3315, 1100], [6790, 1300], [9300, 1250], [9120, 2580], [8300, 2440], [4450, 2870], [1700, 2400]];
 
 // ------------------------------------------------------------ utilidades
 const type = (text, t, t0, cps = 26) => (t < t0 ? '' : text.slice(0, Math.min(text.length, Math.floor((fq(t) - t0) * cps) + 1)));
@@ -160,30 +158,6 @@ export function createBoard() {
     ctx.fillStyle = 'rgba(200,205,210,0.055)';
     const s = 2.4 / cam.z;
     for (let x = Math.floor(x0 / step) * step; x < x1; x += step) for (let y = Math.floor(y0 / step) * step; y < y1; y += step) ctx.fillRect(x - s / 2, y - s / 2, s, s);
-  }
-
-  function redString(ctx, t) {
-    // progresso: chega à âncora k+1 no fim da panorâmica k
-    const pts = [ANCHORS[0]];
-    let reached = 0;
-    for (let k = 0; k < PANS.length; k++) {
-      const p = PANS[k];
-      const u = E.inOut(clamp((t - p.t0) / (p.t1 - p.t0)));
-      if (u <= 0) break;
-      const a = ANCHORS[k], b = ANCHORS[k + 1];
-      pts.push([lerp(a[0], b[0], u), lerp(a[1], b[1], u)]);
-      if (u < 1) break;
-      reached = k + 1;
-    }
-    const first = tw(t, 0.2, 0.6, E.linear);
-    if (first <= 0) return;
-    ctx.save();
-    ctx.globalAlpha *= 0.85 * first;
-    drawPolyline(ctx, pts, 1, { color: '#8E2430', width: 3 });
-    for (let k = 0; k <= reached; k++) node(ctx, ANCHORS[k][0], ANCHORS[k][1], 14, PAL.redBox, 1);
-    const head = pts[pts.length - 1];
-    if (pts.length - 1 > reached) node(ctx, head[0], head[1], 12, '#FF5A66', 1);
-    ctx.restore();
   }
 
   // ---------------------------------------------------------- 1 · linha do tempo
@@ -422,16 +396,6 @@ export function createBoard() {
       drawSegs(ctx, [{ text: v.label, color: last ? PAL.red : '#7E8285' }], v.x, v.y + v.h + 44, { ls: 4 });
       if (last && hot > 0) transformBox(ctx, v.x - 26, v.y - 26, v.w + 52, v.h + 52, hot, { color: PAL.redBox, hs: 14 });
     });
-    // seta dourada subindo
-    const ap = tw(t, AW.fazer + 0.2, AW.melhor + 0.1, E.inOut);
-    if (ap > 0) {
-      const pts = [[9300, 1250], [11300, 960]];
-      drawPolyline(ctx, pts, ap, { color: PAL.gold, width: 4 });
-      if (ap >= 1) {
-        ctx.save(); ctx.fillStyle = PAL.gold; ctx.translate(11300, 960); ctx.rotate(Math.atan2(-290, 2000));
-        ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-30, -14); ctx.lineTo(-30, 14); ctx.closePath(); ctx.fill(); ctx.restore();
-      }
-    }
     typeLine(ctx, [{ text: 'MELHOR ', color: PAL.red }, { text: 'QUE O ANTERIOR.', color: PAL.white }], 9300, 1370, t, AW.melhor - 0.02, 76, { cps: 22 });
   }
 
@@ -788,7 +752,6 @@ export function createBoard() {
     ctx.save();
     ctx.translate(W / 2, H / 2); ctx.scale(cam.z, cam.z); ctx.translate(-cam.cx, -cam.cy);
     boardGrid(ctx, cam);
-    redString(ctx, t);
     station1(ctx, t, fi);
     station2(ctx, t, fi);
     station3(ctx, t, fi);
