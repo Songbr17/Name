@@ -7,8 +7,8 @@
 //   node scripts/render.mjs --comp camada --ref ... --audio /caminho/Comp_-_Camada_Invisivel.mp3 [opções]
 // Opções:
 //   --comp NOME         principal (0:39 -> fim, padrão), camada ("Camada Invisível", 0 -> 41,86 s)
-//                       ou cta (chamada para o Apoia.se, 0 -> 33,57 s)
-//   --from N --to N     intervalo de quadros (padrão: 958..1526 na principal, 0..1004 na camada, 0..805 no cta)
+//                       cta (chamada para o Apoia.se, 0 -> 33,57 s) ou cena3d (a assinatura, 0 -> 11,6 s)
+//   --from N --to N     intervalo de quadros (padrão: 958..1526 na principal, 0..1004 na camada, 0..805 no cta, 0..278 na cena3d)
 //   --step N            renderiza 1 a cada N quadros (prévia rápida)
 //   --list a,b,c        renderiza só esses quadros
 //   --workers N         instâncias paralelas do navegador (padrão 2)
@@ -32,6 +32,7 @@ const COMPS = {
   principal: { start: 958, end: 1526, frames: 'frames', plate: (n) => n },
   camada: { start: 0, end: 1004, frames: 'frames_camada', plate: plateCamada, audio: 'camada_invisivel.mp3', out: 'camada_invisivel_1440p.mp4' },
   cta: { start: 0, end: 805, frames: 'frames_cta', plate: plateCamada, audio: 'cta.mp3', out: 'cta_apoiase_1440p.mp4' },
+  cena3d: { start: 0, end: 278, frames: 'frames_cena3d', plate: plateCamada, audio: 'cena_3d.mp3', out: 'cena_3d_assinatura_1440p.mp4' },
 };
 if (!COMPS[COMP]) throw new Error(`composição desconhecida: ${COMP}`);
 const { start: START, end: END, plate: plateOf } = COMPS[COMP];

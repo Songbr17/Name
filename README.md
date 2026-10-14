@@ -149,6 +149,23 @@ node scripts/render.mjs --comp cta --ref /caminho/Comp_Principal_editado_complet
   --audio /caminho/CTA.mp3 --workers 2 --encode
 ```
 
+## Cena 3D: a assinatura (11,6 s)
+
+Cena toda em 3D sobre o mesmo fundo, feita para o áudio `Cena_3D.mp3`. Arquivo:
+`render/cena_3d_assinatura_1440p.mp4` (2560×1440, 24 fps, com a narração). Um único mundo com
+uma câmera contínua (spline com holds): esteira de ordens, portal do sistema de detecção,
+teclado ao lado do emissor e, no fim da esteira, a trava com a fechadura.
+
+| Tempo | Narração | Visual |
+|---|---|---|
+| 0,0 | "O sistema de detecção olhava para aquilo e não via uma invasão." | As ordens atravessam o portal de varredura, vigiado por uma câmera que gira devagar. Cada ordem que passa ganha um ✓. Etiquetas **SISTEMA DE DETECÇÃO** e **NENHUMA INVASÃO**. |
+| 3,8 | "E o roubo não precisava mais de ninguém digitando nada, podia ser automático." | A câmera corre até o teclado, parado (**NINGUÉM DIGITANDO**). Em "podia", as teclas começam a descer sozinhas, a luz de fundo acende em vermelho e o fluxo acelera (**AUTOMÁTICO**). |
+| 8,0 | "Mas nada disso bastaria sem a última peça, a assinatura." | A trava sobe no fim da esteira e tudo para. No topo da fechadura, o encaixe vazio pisca (**A ÚLTIMA PEÇA**). A peça desce com a assinatura gravada, acende em dourado (**A ASSINATURA**) e fica parada logo acima do encaixe. |
+
+```bash
+node scripts/render.mjs --comp cena3d --audio /caminho/Cena_3D.mp3 --workers 3 --encode
+```
+
 ## Estilo herdado da referência
 
 - **Fontes**: JetBrains Mono Bold (títulos/rótulos), FreeMono Oblique (o itálico
@@ -202,6 +219,8 @@ src/
                           digital.js (2D), world.js + world-textures.js (3D), timeline.js
   comps/cta/              CTA: words.js (tempos), apoiase.js (página da campanha, navegador,
                           cursor, recompensas), board.js (estações + câmera + relógio), timeline.js
+  comps/cena3d/           "a assinatura": words.js (tempos), world.js (esteira, portal, teclado,
+                          trava, peça, câmera e etiquetas), timeline.js
   core/
     config.js             tempos das palavras, paleta, fontes
     ease.js / rand.js     easings, molas, ruído determinístico

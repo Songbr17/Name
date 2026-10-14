@@ -56,7 +56,7 @@ async function boot() {
   document.body.appendChild(renderer.domElement);
 
   const comp = new Compositor(renderer, W, H);
-  const MODS = { camada: './comps/camada/timeline.js', cta: './comps/cta/timeline.js' };
+  const MODS = { camada: './comps/camada/timeline.js', cta: './comps/cta/timeline.js', cena3d: './comps/cena3d/timeline.js' };
   const mod = await import(MODS[COMP] || './timeline.js');
   const tl = await mod.createTimeline({ renderer });
   const ctx = comp.uiCanvas.getContext('2d');
