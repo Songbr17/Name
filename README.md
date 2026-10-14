@@ -1,10 +1,12 @@
 # Animações no estilo documental dark (+ objetos 3D)
 
-Este repositório renderiza duas composições no mesmo motor:
+Este repositório renderiza três composições no mesmo motor:
 
 - **Comp Principal, 0:39 → fim** (seção abaixo).
 - **Comp - Camada Invisível** (41,9 s), com matérias reais nas janelas, trecho 2D e cenas 3D
   (veja [Camada Invisível](#comp---camada-invisível-419-s)).
+- **CTA (apoia.se/flux)** (33,6 s), chamada para apoiar o canal, em 2D
+  (veja [CTA](#cta-apoiaseflux-336-s)).
 
 ---
 
@@ -113,6 +115,40 @@ node scripts/render.mjs --comp camada --ref /caminho/Comp_Principal_editado_comp
 O render leva cerca de 1h30 em 4 núcleos de CPU (WebGL por software). Ele é retomável,
 e `--list 120,480,900` renderiza só alguns quadros.
 
+## CTA apoia.se/flux (33,6 s)
+
+Chamada para apoiar o canal no Apoia.se, feita para o áudio `CTA.mp3`, toda em 2D sobre o
+mesmo fundo. Arquivo: `render/cta_apoiase_1440p.mp4` (2560×1440, 24 fps, com a narração).
+
+**Conceito.** A história pausa antes da madrugada do dia 30, e o Flux se investiga como se
+fosse um caso: a câmera viaja por um quadro de investigação, estação por estação, seguindo
+um fio vermelho. Entre uma estação e outra, ela dá um respiro de zoom e mostra o quadro. Uma
+**contagem regressiva de 30 s** começa em "30 segundos" e zera exatamente no "agradeço".
+
+| Tempo | Narração | Visual |
+|---|---|---|
+| 0,0 | "Antes da madrugada do dia 30, 30 segundos." | Linha do tempo do vídeo: a cabeça de leitura para logo antes do marcador **MADRUGADA DO DIA 30** (‖ PAUSADO). O relógio **00:30** surge grande e voa para o canto, onde fica contando. |
+| 3,4 | "O Flux é uma pessoa só." | **FLUX_** se monta letra a letra, com a caixa de seleção de alças vermelhas do banner do canal; depois **= 1 PESSOA SÓ.** |
+| 5,2 | "Sem equipe, sem estúdio, sem produtora." | **SEM** EQUIPE. / **SEM** ESTÚDIO. / **SEM** PRODUTORA., no itálico de máquina de escrever, com o "SEM" em vermelho, como na referência. |
+| 7,9 | "Cada caso… escolhido, investigado e montado por mim." | Fichas chegam e empilham. Na ficha do **CASO**, os ✓ entram em ESCOLHIDO, INVESTIGADO e MONTADO; em "por mim" vêm a assinatura e o **carimbo FLUX**. |
+| 12,0 | "E o meu objetivo é simples: fazer cada vídeo melhor que o anterior." | Quatro vídeos em escada, cada um mais rico que o anterior; o **PRÓXIMO** ganha a caixa de seleção, sob a seta dourada **MELHOR QUE O ANTERIOR.** |
+| 15,8 | "Animação mais elaborada, som mais trabalhado, investigação mais completa." | Medidores de 10 segmentos: em cada palavra, a metade que falta acende em vermelho (MAIS ELABORADA / TRABALHADO / COMPLETA). |
+| 20,0 | "Se esse vídeo está valendo seu tempo, você pode me ajudar a chegar lá." | O relógio do canto pulsa em "seu tempo". O cursor do espectador entra e aponta a **META** (os segmentos novos). |
+| 23,3 | "É só entrar em apoia.se/flux." | Navegador: clique na barra de endereço, zoom, e **apoia.se/flux** digitado no tempo da fala; Enter carrega a página da campanha. |
+| 26,1 | "O link também está na descrição." | Selo **LINK NA DESCRIÇÃO ↓**, com a seta quicando. |
+| 27,8 | "Qualquer valor ajuda." | O cursor clica em **Apoiar com R$ 5 ou +** e as recompensas (R$ 5 / R$ 15 / R$ 30) abrem em leque. |
+| 29,1 | "E quem apoia aparece nos créditos dos próximos vídeos." | A recompensa **Nos créditos** se destaca e a câmera vai para os créditos (**APOIADORES**, nomes tarjados rolando), onde **SEU NOME AQUI** acende em dourado. |
+| 32,1 | "Desde já, agradeço." | O relógio volta ao centro e zera em **00:00** no "agradeço", seguido de **OBRIGADO.**, o avatar F_ e apoia.se/flux. Glitch de saída para voltar à história. |
+
+A página da campanha foi reconstruída a partir das capturas da própria campanha (textos e
+recompensas iguais aos da página). Os contadores "0 apoiadores" e a aba "Rascunhos", que só
+aparecem para o dono, ficaram de fora.
+
+```bash
+node scripts/render.mjs --comp cta --ref /caminho/Comp_Principal_editado_completo_previa_1440p.mp4 \
+  --audio /caminho/CTA.mp3 --workers 2 --encode
+```
+
 ## Estilo herdado da referência
 
 - **Fontes**: JetBrains Mono Bold (títulos/rótulos), FreeMono Oblique (o itálico
@@ -164,6 +200,8 @@ src/
   comps/camada/           "Camada Invisível": words.js (tempos), plate.js (fundo em vai e
                           volta), articles.js (matérias verificadas + fontes), windows.js,
                           digital.js (2D), world.js + world-textures.js (3D), timeline.js
+  comps/cta/              CTA: words.js (tempos), apoiase.js (página da campanha, navegador,
+                          cursor, recompensas), board.js (estações + câmera + relógio), timeline.js
   core/
     config.js             tempos das palavras, paleta, fontes
     ease.js / rand.js     easings, molas, ruído determinístico

@@ -77,7 +77,8 @@ async function boot() {
     // antisserrilhado por acumulação: com muitos sub-quadros, cada um desloca a
     // câmera por uma fração de pixel (Halton 2,3) e o MSAA é desligado
     const jitterAA = tl.jitterAA && N >= 6;
-    comp.setMSAA(jitterAA ? 0 : 4);
+    // composições só 2D: a camada 3D fica vazia (sem MSAA e limpa uma vez só)
+    comp.setMSAA(jitterAA || tl.only2D ? 0 : 4);
     comp.beginFrame();
     for (let s = 0; s < N; s++) {
       const ts = N === 1 ? t : t + ((s + 0.5) / N - 0.5) * SHUTTER / FPS;
@@ -88,7 +89,7 @@ async function boot() {
       tl.drawUI(ctx, ts, fi, st);
       tm = mark('ui', tm);
       if (jitterAA && st.camera) st.camera.setViewOffset(W, H, halton(s + 1, 2) - 0.5, halton(s + 1, 3) - 0.5, W, H);
-      comp.render3D(st.scene, st.camera, st.extra);
+      if (st.scene || !tl.only2D || s === 0) comp.render3D(st.scene, st.camera, st.extra);
       if (jitterAA && st.camera) st.camera.clearViewOffset();
       tm = mark('3d', tm);
       const blur = st.blur || 0;

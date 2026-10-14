@@ -31,5 +31,5 @@ export async function createTimeline() {
     return fp;
   }
 
-  return { samples: board.samples, update, drawUI, frameParams, plateFor, camAt: board.camAt };
+  return { samples: board.samples, update, drawUI, frameParams, plateFor, camAt: board.camAt, only2D: true };
 }
