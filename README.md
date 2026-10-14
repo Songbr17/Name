@@ -121,8 +121,8 @@ Chamada para apoiar o canal no Apoia.se, feita para o áudio `CTA.mp3`, toda em 
 mesmo fundo. Arquivo: `render/cta_apoiase_1440p.mp4` (2560×1440, 24 fps, com a narração).
 
 **Conceito.** A história pausa antes da madrugada do dia 30, e o Flux se investiga como se
-fosse um caso: a câmera viaja por um quadro de investigação, estação por estação, seguindo
-um fio vermelho. Entre uma estação e outra, ela dá um respiro de zoom e mostra o quadro. Uma
+fosse um caso: a câmera viaja por um quadro de investigação, estação por estação. Entre uma
+estação e outra, ela dá um respiro de zoom e mostra o quadro. Uma
 **contagem regressiva de 30 s** começa em "30 segundos" e zera exatamente no "agradeço".
 
 | Tempo | Narração | Visual |
@@ -131,7 +131,7 @@ um fio vermelho. Entre uma estação e outra, ela dá um respiro de zoom e mostr
 | 3,4 | "O Flux é uma pessoa só." | **FLUX_** se monta letra a letra, com a caixa de seleção de alças vermelhas do banner do canal; depois **= 1 PESSOA SÓ.** |
 | 5,2 | "Sem equipe, sem estúdio, sem produtora." | **SEM** EQUIPE. / **SEM** ESTÚDIO. / **SEM** PRODUTORA., no itálico de máquina de escrever, com o "SEM" em vermelho, como na referência. |
 | 7,9 | "Cada caso… escolhido, investigado e montado por mim." | Fichas chegam e empilham. Na ficha do **CASO**, os ✓ entram em ESCOLHIDO, INVESTIGADO e MONTADO; em "por mim" vêm a assinatura e o **carimbo FLUX**. |
-| 12,0 | "E o meu objetivo é simples: fazer cada vídeo melhor que o anterior." | Quatro vídeos em escada, cada um mais rico que o anterior; o **PRÓXIMO** ganha a caixa de seleção, sob a seta dourada **MELHOR QUE O ANTERIOR.** |
+| 12,0 | "E o meu objetivo é simples: fazer cada vídeo melhor que o anterior." | Quatro vídeos em escada, cada um mais rico que o anterior; o **PRÓXIMO** ganha a caixa de seleção e entra **MELHOR QUE O ANTERIOR.** |
 | 15,8 | "Animação mais elaborada, som mais trabalhado, investigação mais completa." | Medidores de 10 segmentos: em cada palavra, a metade que falta acende em vermelho (MAIS ELABORADA / TRABALHADO / COMPLETA). |
 | 20,0 | "Se esse vídeo está valendo seu tempo, você pode me ajudar a chegar lá." | O relógio do canto pulsa em "seu tempo". O cursor do espectador entra e aponta a **META** (os segmentos novos). |
 | 23,3 | "É só entrar em apoia.se/flux." | Navegador: clique na barra de endereço, zoom, e **apoia.se/flux** digitado no tempo da fala; Enter carrega a página da campanha. |
