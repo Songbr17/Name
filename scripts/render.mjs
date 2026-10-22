@@ -32,7 +32,7 @@ const COMPS = {
   principal: { start: 958, end: 1526, frames: 'frames', plate: (n) => n },
   camada: { start: 0, end: 1004, frames: 'frames_camada', plate: plateCamada, audio: 'camada_invisivel.mp3', out: 'camada_invisivel_1440p.mp4' },
   cta: { start: 0, end: 805, frames: 'frames_cta', plate: plateCamada, audio: 'cta.mp3', out: 'cta_apoiase_1440p.mp4' },
-  cena3d: { start: 0, end: 278, frames: 'frames_cena3d', plate: plateCamada, audio: 'cena_3d.mp3', out: 'cena_3d_assinatura_1440p.mp4' },
+  cena3d: { start: 0, end: 278, frames: 'frames_cena3d', plate: plateCamada, audio: 'cena_3d.mp3', out: 'Camada_Invisivel_assinatura_v2_2560x1440.mp4' },
   epilogo: { start: 0, end: 878, frames: 'frames_epilogo', plate: plateCamada, audio: 'epilogo.mp3', out: 'Epilogo_O_Nome_Voltou_2560x1440.mp4' },
 };
 if (!COMPS[COMP]) throw new Error(`composição desconhecida: ${COMP}`);

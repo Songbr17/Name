@@ -1,6 +1,6 @@
 // Linha do tempo da "Cena 3D — a assinatura" (0 – 11,6 s), sobre o mesmo fundo.
 import { plateFor } from '../camada/plate.js';
-import { drawBottomBrackets } from '../../core/draw.js';
+import { drawHud } from '../../core/draw.js';
 import { createScene } from './world.js';
 
 export async function createTimeline({ renderer }) {
@@ -13,7 +13,8 @@ export async function createTimeline({ renderer }) {
 
   function drawUI(ctx, t, fi) {
     world.ui(ctx, t, fi);
-    drawBottomBrackets(ctx, 1);
+    // HUD do episódio já montado desde o 1º quadro (a emenda com a comp anterior fica idêntica)
+    drawHud(ctx, t, fi, { t0: -5, title: 'A CAMADA INVISÍVEL', subtitle: 'O ROUBO', active: 1 });
   }
 
   function frameParams(t, fi) {

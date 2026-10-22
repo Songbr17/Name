@@ -1,4 +1,4 @@
-// Cena 3D — "O sistema de detecção olhava para aquilo e não via uma invasão.
+// Cena 3D — "Os sistemas de detecção olhavam pra aquilo e não viam invasão.
 // E o roubo não precisava mais de ninguém digitando nada, podia ser
 // automático. Mas nada disso bastaria sem a última peça, a assinatura."
 //
@@ -204,8 +204,8 @@ function beltCanvas() {
 // ------------------------------------------------------------ câmera
 // Spline de Hermite com holds (velocidade zero = easy ease do AE).
 const KEYS = [
-  { t: 0.00, p: [0.85, 0.88, 2.15], q: [-0.62, 0.42, 0.00], f: 34, hold: true },
-  { t: 3.55, p: [0.45, 0.76, 1.75], q: [-0.63, 0.45, -0.02], f: 33, hold: true },
+  { t: 0.00, p: [0.85, 0.88, 2.15], q: [-0.62, 0.47, 0.00], f: 34, hold: true },
+  { t: 3.55, p: [0.50, 0.80, 1.85], q: [-0.63, 0.52, -0.02], f: 33, hold: true },
   { t: 4.75, p: [-1.80, 0.62, 1.55], q: [-2.50, 0.17, 0.60], f: 34, hold: true },
   { t: 6.55, p: [-2.02, 0.50, 1.28], q: [-2.50, 0.16, 0.66], f: 33, hold: true },
   { t: 7.95, p: [-1.35, 0.98, 2.15], q: [-1.75, 0.22, 0.10], f: 35 },
@@ -527,7 +527,7 @@ export function createScene(renderer) {
     if (t < t0 || t > out + 0.2 || a.behind) return null;
     setFont(ctx, FONTS.mono, 26, 700);
     const w = Math.round(measure(ctx, text, 5.5) + 64), h = 58;
-    let x = clamp(a.x + dx, 150, W - 150 - w), y = clamp(a.y + dy, 210, H - 230 - h);
+    let x = clamp(a.x + dx, 150, W - 150 - w), y = clamp(a.y + dy, 250, H - 230 - h);
     if (below) { x = below.x; y = below.y + below.h + 16; }   // empilhada embaixo de outra etiqueta
     const alpha = 1 - tw(t, out, out + 0.16, E.inOut);
     labelBox(ctx, t, fi, { x, y, w, h, text, t0, seed, alpha, ...STY[sty] });
@@ -571,7 +571,7 @@ export function createScene(renderer) {
     });
 
     const aS = scr(SCAN_X, TY + 0.74, -0.40);
-    const L1 = tag(ctx, t, fi, { a: aS, dx: 60, dy: -20, text: 'SISTEMA DE DETECÇÃO', t0: SW.sistema, out: 3.62, sty: 'teal', seed: 21 });
+    const L1 = tag(ctx, t, fi, { a: aS, dx: 60, dy: -20, text: 'SISTEMAS DE DETECÇÃO', t0: SW.sistema, out: 3.62, sty: 'teal', seed: 21 });
     const L2 = L1 && tag(ctx, t, fi, { a: aS, below: L1, text: 'NENHUMA INVASÃO', t0: SW.via, out: 3.62, sty: 'teal', seed: 22 });
     if (L2) {
       ctx.save(); ctx.globalAlpha *= L2.alpha * tw(t, SW.via + 0.1, SW.via + 0.3, E.out);
