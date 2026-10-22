@@ -166,6 +166,30 @@ teclado ao lado do emissor e, no fim da esteira, a trava com a fechadura.
 node scripts/render.mjs --comp cena3d --audio /caminho/Cena_3D.mp3 --workers 3 --encode
 ```
 
+## Epílogo: o nome voltou (36,6 s)
+
+Comp 2D sobre o mesmo fundo, feita para a narração do epílogo. Arquivo:
+`render/Epilogo_O_Nome_Voltou_2560x1440.mp4` (2560×1440, 24 fps, com a narração). A câmera
+viaja por um quadro de investigação montado em degraus, e o HUD é "EPÍLOGO / O NOME VOLTOU".
+
+| Tempo | Narração | Visual |
+|---|---|---|
+| 0,0 | "Em abril de 2026, a Rockstar foi invadida de novo." | **ABRIL DE 2026** em varredura; o cartão **ROCKSTAR** e as etiquetas **INVADIDA** e **DE NOVO**, com eco. |
+| 3,7 | "Dessa vez por um grupo chamado ShinyHunters, que entrou por meio de um fornecedor da empresa." | A câmera recua: **SHINYHUNTERS** (grupo) → **FORNECEDOR** → ROCKSTAR, com o pacote correndo pelas ligações. |
+| 8,7 | "A Rockstar disse que o acesso se limitou a informações sem relevância." | Cartão **A ROCKSTAR DISSE** com a frase digitada no tempo da fala e "SEM RELEVÂNCIA" sublinhado. |
+| 12,6 | "Desde 2025, o ShinyHunters opera numa aliança com outros grupos. O nome da aliança é Scattered Lapsus$ Hunters." | O print do perfil "Dark Web Profile: Scattered Lapsus$ Hunters" numa janela, com grifos no tempo da fala: mid-2025, ShinyHunters, Scattered Spider e Lapsus$, e o nome da aliança no texto e no título. |
+| 19,9 | "O nome voltou." | **SCATTERED LAPSUS$ HUNTERS** em varredura; só o **LAPSUS$** fica e cresce. Etiqueta **O NOME VOLTOU.** |
+| 20,8 | "E o GTA 6 chega às lojas no dia 19 de novembro." | **GTA 6** · CHEGA ÀS LOJAS e o calendário de novembro de 2026 com o **19** circulado. |
+| 24,1 | "O Lapsus$ foi só o primeiro de uma geração de grupos que aprendeu a invadir as maiores empresas do mundo com um telefone na mão." | **LAPSUS$ (O PRIMEIRO)** → a geração de grupos (Scattered Spider, ShinyHunters e outros sem nome) → as maiores empresas do mundo, invadidas. Um selo de ligação aparece em cada grupo: **COM UM TELEFONE NA MÃO**. |
+| 31,3 | "Se você gostou desse vídeo… Te vejo lá, muito obrigado." | Tela final: o HUD sai, as cantoneiras ficam. Espaço do próximo vídeo com a moldura da marca, o texto digitado, a seta, **TE VEJO LÁ.** e o logo FLUX_ com MUITO OBRIGADO. |
+
+O print foi recortado no título e nos dois parágrafos (o cartão do Telegram não é narrado).
+O logo é o PNG da marca (`assets/marca/FLUX_logo.png`).
+
+```bash
+node scripts/render.mjs --comp epilogo --audio /caminho/epilogo.mp3 --workers 3 --encode
+```
+
 ## Estilo herdado da referência
 
 - **Fontes**: JetBrains Mono Bold (títulos/rótulos), FreeMono Oblique (o itálico
@@ -221,6 +245,8 @@ src/
                           cursor, recompensas), board.js (estações + câmera + relógio), timeline.js
   comps/cena3d/           "a assinatura": words.js (tempos), world.js (esteira, portal, teclado,
                           trava, peça, câmera e etiquetas), timeline.js
+  comps/epilogo/          "o nome voltou": words.js (tempos), board.js (regiões, câmera, print com
+                          grifos, calendário, geração de grupos, tela final), timeline.js
   core/
     config.js             tempos das palavras, paleta, fontes
     ease.js / rand.js     easings, molas, ruído determinístico

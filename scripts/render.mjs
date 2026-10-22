@@ -7,8 +7,8 @@
 //   node scripts/render.mjs --comp camada --ref ... --audio /caminho/Comp_-_Camada_Invisivel.mp3 [opções]
 // Opções:
 //   --comp NOME         principal (0:39 -> fim, padrão), camada ("Camada Invisível", 0 -> 41,86 s)
-//                       cta (chamada para o Apoia.se, 0 -> 33,57 s) ou cena3d (a assinatura, 0 -> 11,6 s)
-//   --from N --to N     intervalo de quadros (padrão: 958..1526 na principal, 0..1004 na camada, 0..805 no cta, 0..278 na cena3d)
+//                       cta (chamada para o Apoia.se, 0 -> 33,57 s) cena3d (a assinatura, 0 -> 11,6 s) ou epilogo (o nome voltou, 0 -> 36,6 s)
+//   --from N --to N     intervalo de quadros (padrão: 958..1526 na principal, 0..1004 na camada, 0..805 no cta, 0..278 na cena3d, 0..878 no epilogo)
 //   --step N            renderiza 1 a cada N quadros (prévia rápida)
 //   --list a,b,c        renderiza só esses quadros
 //   --workers N         instâncias paralelas do navegador (padrão 2)
@@ -33,6 +33,7 @@ const COMPS = {
   camada: { start: 0, end: 1004, frames: 'frames_camada', plate: plateCamada, audio: 'camada_invisivel.mp3', out: 'camada_invisivel_1440p.mp4' },
   cta: { start: 0, end: 805, frames: 'frames_cta', plate: plateCamada, audio: 'cta.mp3', out: 'cta_apoiase_1440p.mp4' },
   cena3d: { start: 0, end: 278, frames: 'frames_cena3d', plate: plateCamada, audio: 'cena_3d.mp3', out: 'cena_3d_assinatura_1440p.mp4' },
+  epilogo: { start: 0, end: 878, frames: 'frames_epilogo', plate: plateCamada, audio: 'epilogo.mp3', out: 'Epilogo_O_Nome_Voltou_2560x1440.mp4' },
 };
 if (!COMPS[COMP]) throw new Error(`composição desconhecida: ${COMP}`);
 const { start: START, end: END, plate: plateOf } = COMPS[COMP];
